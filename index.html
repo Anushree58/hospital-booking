@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Unified Doctor Booking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body{
+            background: linear-gradient(135deg, #4facfe, #00f2fe);
+            min-height:100vh;
+            display:flex;
+            flex-direction:column;
+        }
+
+        /* Navbar */
+        nav{
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
+            padding:15px 50px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        nav h2{
+            color:white;
+            font-weight:700;
+        }
+
+        nav a{
+            color:white;
+            text-decoration:none;
+            margin-left:20px;
+            font-weight:500;
+            transition:0.3s;
+        }
+
+        nav a:hover{
+            color:yellow;
+        }
+
+        /* Hero Section */
+        .hero{
+            flex:1;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            text-align:center;
+            color:white;
+            padding:20px;
+        }
+
+        .hero h1{
+            font-size:45px;
+            margin-bottom:20px;
+        }
+
+        .hero p{
+            font-size:18px;
+            margin-bottom:30px;
+        }
+
+        .btn{
+            padding:12px 25px;
+            margin:10px;
+            border:none;
+            border-radius:30px;
+            font-size:16px;
+            cursor:pointer;
+            transition:0.3s;
+        }
+
+        .btn-primary{
+            background: #ff6a00;
+            color:white;
+        }
+
+        .btn-primary:hover{
+            background:#ff3c00;
+            transform: scale(1.05);
+        }
+
+        .btn-secondary{
+            background:white;
+            color:#0072ff;
+        }
+
+        .btn-secondary:hover{
+            background:#f1f1f1;
+            transform: scale(1.05);
+        }
+
+        /* Features Section */
+        .features{
+            background:white;
+            padding:50px 20px;
+            text-align:center;
+        }
+
+        .features h2{
+            margin-bottom:40px;
+            color:#0072ff;
+        }
+
+        .feature-box{
+            display:inline-block;
+            width:250px;
+            margin:15px;
+            padding:25px;
+            border-radius:15px;
+            background:linear-gradient(135deg, #43e97b, #38f9d7);
+            color:white;
+            transition:0.3s;
+        }
+
+        .feature-box:hover{
+            transform: translateY(-10px);
+        }
+
+        footer{
+            background:#0072ff;
+            color:white;
+            text-align:center;
+            padding:15px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav>
+        <h2>HealthConnect</h2>
+        <div>
+            <a href="#">Home</a>
+            <a href="#">Search Doctors</a>
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div>
+            <h1>Find Doctors Across All Hospitals</h1>
+            <p>View availability, check consultation timings and book tokens instantly.</p>
+            <a href="search.html">
+            <button class="btn btn-primary">Search Doctors</button>
+            </a>
+
+            <button class="btn btn-secondary">Book Appointment</button>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section class="features">
+        <h2>Why Choose Our Platform?</h2>
+
+        <div class="feature-box">
+            <h3>🔍 Easy Search</h3>
+            <p>Search doctors by specialization and location.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>📅 Real-Time Slots</h3>
+            <p>Check live availability and token status.</p>
+        </div>
+
+        <div class="feature-box">
+            <h3>⚡ Quick Booking</h3>
+            <p>Book your appointment in just one click.</p>
+        </div>
+
+    </section>
+
+    <footer>
+        © 2026 Unified Doctor Booking System | Designed by Anu 💙
+    </footer>
+
+</body>
+</html>
