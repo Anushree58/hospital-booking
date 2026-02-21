@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Payment</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<style>
+body{
+    font-family:Arial;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+    color:white;
+    text-align:center;
+    padding-top:50px;
+}
+.payment-box{
+    background:white;
+    color:black;
+    width:300px;
+    margin:auto;
+    padding:20px;
+    border-radius:15px;
+}
+button{
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    background:#ff6a00;
+    color:white;
+    cursor:pointer;
+}
+button:hover{
+    background:#ff3c00;
+}
+select{
+    padding:8px;
+    margin:10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Payment Gateway</h1>
+
+<div class="payment-box">
+    <h3>Total Amount: ₹<span id="amount"></span></h3>
+
+    <label>Select Payment Method:</label><br>
+    <select id="method">
+        <option>UPI</option>
+        <option>Debit Card</option>
+        <option>Credit Card</option>
+        <option>Net Banking</option>
+    </select><br><br>
+  <h3>Ordered Medicines:</h3>
+<p id="orderedItems"></p>
+
+<h3>Prescription:</h3>
+<img id="showPrescription" width="150">
+    <button onclick="makePayment()">Pay Now</button>
+    <h3>Delivery Details</h3>
+    <p id="deliveryInfo"></p>
+</div>
+
+<script>
+document.getElementById("amount").innerText =
+localStorage.getItem("totalAmount") || "0";
+
+// Show delivery details
+let name = localStorage.getItem("customerName");
+let phone = localStorage.getItem("customerPhone");
+let address = localStorage.getItem("customerAddress");
+
+if(name && phone && address){
+    document.getElementById("deliveryInfo").innerHTML =
+    "Name: " + name + "<br>Phone: " + phone + "<br>Address: " + address;
+}
+
+function makePayment(){
+    alert("Payment Successful!");
+    localStorage.removeItem("cartData");
+    localStorage.removeItem("totalAmount");
+    window.location.href="medicines.html";
+}
+
+function onScanSuccess(decodedText, decodedResult) {
+    document.getElementById("qr-result").innerHTML =
+    "QR Scanned: " + decodedText;
+
+    alert("Payment Successful via QR!");
+    localStorage.removeItem("cartData");
+    localStorage.removeItem("totalAmount");
+
+    window.location.href="medicines.html";
+}
+
+function onScanFailure(error) {
+    // ignore scan errors
+}
+
+let html5QrcodeScanner = new Html5QrcodeScanner(
+    "reader",
+    { fps: 10, qrbox: 200 }
+);
+html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+// Show ordered medicines
+let cartData = JSON.parse(localStorage.getItem("cartData")) || {};
+let orderHTML = "";
+
+for(let item in cartData){
+    orderHTML += item + " x " + cartData[item].quantity + "<br>";
+}
+
+document.getElementById("orderedItems").innerHTML = orderHTML;
+
+// Show prescription image
+let savedImage = localStorage.getItem("prescriptionImage");
+if(savedImage){
+    document.getElementById("showPrescription").src = savedImage;
+}
+</script>
+<br>
+<h4>Scan QR Code</h4>
+<div id="reader" style="width:250px; margin:auto;"></div>
+<br>
+<p id="qr-result"></p>
+
+</body>
+</html>

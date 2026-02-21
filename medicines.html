@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Buy Medicines</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<img id="preview" width="150" style="display:none; margin-top:10px;">
+<style>
+body{
+    font-family:Arial;
+    background:linear-gradient(135deg,#43cea2,#185a9d);
+    color:white;
+    text-align:center;
+}
+.medicine-card{
+    background:white;
+    color:black;
+    width:250px;
+    padding:20px;
+    margin:20px;
+    display:inline-block;
+    border-radius:15px;
+}
+button{
+    padding:8px 15px;
+    border:none;
+    background:#ff6a00;
+    color:white;
+    border-radius:20px;
+    cursor:pointer;
+}
+button:hover{
+    background:#ff3c00;
+}
+#cart{
+    margin-top:30px;
+    background:white;
+    color:black;
+    padding:20px;
+    border-radius:15px;
+    width:300px;
+    margin-left:auto;
+    margin-right:auto;
+}
+.delivery-box{
+    background:white;
+    color:black;
+    width:280px;
+    margin:auto;
+    padding:20px;
+    border-radius:15px;
+    text-align:left;
+}
+
+.delivery-box input,
+.delivery-box textarea{
+    width:100%;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+
+.delivery-box input:focus,
+.delivery-box textarea:focus{
+    outline:none;
+    border:1px solid #185a9d;
+}
+</style>
+</head>
+
+<body>
+<h2>Upload Prescription</h2>
+
+<input type="file" id="prescription" accept="image/*">
+<br><br>
+
+<p id="prescriptionMsg" style="color:green;"></p>
+<h1>Brand Medicines Store</h1>
+
+<div class="medicine-card">
+    <h3>Dolo 650</h3>
+    <p>Brand: Micro Labs</p>
+    <p>₹30</p>
+    <button onclick="addToCart('Dolo 650',30)">Add to Cart</button>
+</div>
+
+<div class="medicine-card">
+    <h3>Augmentin 625</h3>
+    <p>Brand: GSK</p>
+    <p>₹120</p>
+    <button onclick="addToCart('Augmentin 625',120)">Add to Cart</button>
+</div>
+
+<div class="medicine-card">
+    <h3>Vitamin D3</h3>
+    <p>Brand: HealthKart</p>
+    <p>₹200</p>
+    <button onclick="addToCart('Vitamin D3',200)">Add to Cart</button>
+</div>
+
+<h2>Delivery Address</h2>
+
+<div class="delivery-box">
+
+<label>Full Name</label><br>
+<input type="text" id="fullname" placeholder="Enter your full name"><br><br>
+
+<label>Phone Number</label><br>
+<input type="tel" id="phone" placeholder="Enter 10-digit phone number" maxlength="10"><br><br>
+
+<label>Full Address</label><br>
+<textarea id="address" placeholder="House name, Street, City, Pincode" rows="3"></textarea>
+
+</div>
+<br>
+
+<div id="cart">
+    <h2>Cart</h2>
+    <p id="cartItems">No items added</p>
+    <p id="totalPrice"></p>
+    <button onclick="buyNow()">Buy Now</button>
+</div>
+
+<script>
+var cart = {};
+
+document.getElementById("prescription").addEventListener("change", function(event){
+
+    let file = event.target.files[0];
+
+    if(file){
+        document.getElementById("prescriptionMsg").innerHTML =
+        "Prescription uploaded successfully ✅";
+
+        let reader = new FileReader();
+
+        reader.onload = function(e){
+            let img = document.getElementById("preview");
+            img.src = e.target.result;
+            img.style.display = "block";
+        }
+
+        reader.readAsDataURL(file);
+
+        // Save image in localStorage
+        reader.onloadend = function(){
+            localStorage.setItem("prescriptionImage", reader.result);
+        }
+    }
+});
+
+function addToCart(name, price){
+
+    let file = document.getElementById("prescription").files.length;
+
+    if(file === 0){
+        alert("Please upload prescription first!");
+        return;
+    }
+
+    if(cart[name]){
+        cart[name].quantity++;
+    } else {
+        cart[name] = { price: price, quantity: 1 };
+    }
+
+    updateCart();
+}
+
+function updateCart(){
+    var cartHTML = "";
+    var total = 0;
+
+    for(var item in cart){
+        var qty = cart[item].quantity;
+        var price = cart[item].price;
+        var itemTotal = qty * price;
+        total += itemTotal;
+
+        cartHTML += `
+        ${item} 
+        <button onclick="decreaseItem('${item}')">-</button>
+        ${qty}
+        <button onclick="increaseItem('${item}')">+</button>
+        = ₹${itemTotal}
+        <br><br>
+        `;
+    }
+
+    if(cartHTML === ""){
+        cartHTML = "No items added";
+    }
+
+    document.getElementById("cartItems").innerHTML = cartHTML;
+    document.getElementById("totalPrice").innerHTML = "Total: ₹" + total;
+}
+
+function increaseItem(name){
+    cart[name].quantity++;
+    updateCart();
+}
+
+function decreaseItem(name){
+    cart[name].quantity--;
+
+    if(cart[name].quantity <= 0){
+        delete cart[name];
+    }
+
+    updateCart();
+}
+
+function buyNow(){
+
+    let file = document.getElementById("prescription").files.length;
+    let name = document.getElementById("fullname").value;
+    let phone = document.getElementById("phone").value;
+    let address = document.getElementById("address").value;
+
+    if(file === 0){
+        alert("Please upload prescription first!");
+        return;
+    }
+
+    if(name === "" || phone === "" || address === ""){
+        alert("Please fill delivery details!");
+        return;
+    }
+
+    if(Object.keys(cart).length === 0){
+        alert("Cart is empty!");
+        return;
+    }
+
+    var total = 0;
+    for(var item in cart){
+        total += cart[item].quantity * cart[item].price;
+    }
+
+    // Save everything
+    localStorage.setItem("cartData", JSON.stringify(cart));
+    localStorage.setItem("totalAmount", total);
+    localStorage.setItem("customerName", name);
+    localStorage.setItem("customerPhone", phone);
+    localStorage.setItem("customerAddress", address);
+
+    window.location.href = "payment.html";
+}
+function buySelected(){
+
+    let file = document.getElementById("prescription").files.length;
+
+    if(file === 0){
+        alert("Please upload prescription first!");
+        return;
+    }
+
+    let selected = document.querySelectorAll("input[type='checkbox']:checked");
+
+    if(selected.length === 0){
+        alert("Please select at least one medicine!");
+        return;
+    }
+
+    let total = 0;
+    let cart = [];
+
+    selected.forEach(item=>{
+        cart.push(item.value);
+
+        let price = item.value.match(/₹(\d+)/)[1];
+        total += parseInt(price);
+    });
+
+    localStorage.setItem("cartData", JSON.stringify(cart));
+    localStorage.setItem("totalAmount", total);
+
+    alert("Medicines added to cart!");
+    window.location.href="payment.html";
+}
+document.getElementById("prescription").addEventListener("change", function(){
+    document.getElementById("prescriptionMsg").innerHTML =
+    "Prescription uploaded successfully ✅";
+});
+</script>
+</body>
+</html>
