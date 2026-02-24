@@ -39,6 +39,14 @@
         }
     </style>
 </head>
+<script>
+function login(){
+    localStorage.setItem("loggedIn", "true");
+    alert("Login Successful!");
+    window.location.href = "index.html";
+}
+</script>
+
 <body>
 
 <h1>Login</h1>
@@ -48,7 +56,9 @@
 <input type="password" id="loginPassword" placeholder="Enter Password"><br>
 
 <!-- LOGIN BUTTON -->
-<button onclick="loginUser()">Login</button>
+<button onclick="login()">Login</button>
+
+
 
 <!-- LINK TO REGISTER -->
 <p>Don't have an account? <a href="register.html">Register</a></p>

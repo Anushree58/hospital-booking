@@ -82,10 +82,14 @@
 <div class="search-box">
     <input type="text" id="specialization" placeholder="Enter Specialization">
     <select id="location">
-        <option value="">Select Location</option>
-        <option value="City Hospital">City Hospital</option>
-        <option value="Care Medical">Care Medical</option>
-    </select>
+    <option value="">Select Location</option>
+    <option value="City Hospital - Kasaragod">
+        City Hospital – Kasaragod, Kerala
+    </option>
+    <option value="Care Medical - Kasaragod">
+        Care Medical – Kasaragod, Kerala
+    </option>
+</select>
     <br>
     <button onclick="searchDoctor()">Search</button>
 </div>
@@ -122,7 +126,7 @@ var tokenCounter = 1;
 function searchDoctor(){
 
     var spec = document.getElementById("specialization").value.toLowerCase();
-    var loc = document.getElementById("location").value;
+    var loc = document.getElementById("location").value.toLowerCase();
 
     var doctors = [
         {
@@ -153,23 +157,25 @@ function searchDoctor(){
 
     for(var i=0; i<doctors.length; i++){
 
-        if(spec === doctors[i].specialization && loc === doctors[i].hospital){
+    if(
+        doctors[i].specialization.includes(spec) &&
+        loc.includes(doctors[i].hospital.toLowerCase())
+    ){
 
-            found = true;
+        found = true;
 
-            resultHTML += `
-            <div class="doctor-card" style="display:block;">
-                <h3>${doctors[i].name}</h3>
-                <p>${doctors[i].specialization}</p>
-                <p>Available: ${doctors[i].days}</p>
-                <p>Time: ${doctors[i].time}</p>
-                <button onclick="openModal()">Book Token</button>
-  
-            </div>
-                
-            `;
-        }
+        resultHTML += `
+        <div class="doctor-card" style="display:block;">
+            <h3>${doctors[i].name}</h3>
+            <p>${doctors[i].specialization}</p>
+            <p>${doctors[i].hospital}</p>
+            <p>Available: ${doctors[i].days}</p>
+            <p>Time: ${doctors[i].time}</p>
+            <button onclick="openModal()">Book Token</button>
+        </div>
+        `;
     }
+}
 
     if(found){
         document.getElementById("doctorResult").innerHTML = resultHTML;
@@ -186,16 +192,44 @@ function closeModal(){
     document.getElementById("bookingModal").style.display = "none";
 }
 
-function confirmBooking(){
+var tokenCounter = 1;
 
+function openModal(){
+    document.getElementById("bookingModal").style.display = "flex";
+}
+
+function closeModal(){
+    document.getElementById("bookingModal").style.display = "none";
+}
+
+function confirmBooking(){
     var name = document.getElementById("patientName").value;
     var phone = document.getElementById("phone").value;
     var date = document.getElementById("date").value;
 
     if(name !== "" && phone !== "" && date !== ""){
+        var selectedDate = new Date(date);
 
+        var days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        var months = ["January", "February", "March", "April", "May", "June",
+                      "July", "August", "September", "October", "November", "December"];
+        var dayName = days[selectedDate.getDay()];
+        var monthName = months[selectedDate.getMonth()];
+        var day = selectedDate.getDate();
+        var year = selectedDate.getFullYear();
+
+        var bookingInfo =  `✅ Booking Successful!\n
+        
+Name: ${name}
+Phone: ${phone}
+Date: ${dayName}, ${monthName} ${day}, ${year}
+Token Number: ${tokenCounter}\n`;
+
+        
+        // Show success message
         document.getElementById("successMessage").innerHTML =
-        "✅ Booking Successful! <br> Your Token Number is: " + tokenCounter;
+        bookingInfo.replace(/\n/g,"<br>") +
+        `<br><button onclick="downloadToken('${encodeURIComponent(bookingInfo)}')">Download Token</button>`;
 
         document.getElementById("successMessage").style.display = "block";
 
@@ -211,6 +245,17 @@ function confirmBooking(){
         alert("Please fill all details");
     }
 }
+
+function downloadToken(info){
+    var element = document.createElement('a');
+    var file = new Blob([decodeURIComponent(info)], {type: 'text/plain'});
+    element.href = URL.createObjectURL(file);
+    element.download = "Token.txt";
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
 
 </script>
 

@@ -135,6 +135,30 @@
         }
     </style>
 </head>
+<script>
+    function updateNavbar(){
+        if(localStorage.getItem("loggedIn") === "true"){
+            document.getElementById("nav-login").style.display = "none";
+            document.getElementById("nav-register").style.display = "none";
+            document.getElementById("nav-logout").style.display = "inline";
+        } else {
+            document.getElementById("nav-login").style.display = "inline";
+            document.getElementById("nav-register").style.display = "inline";
+            document.getElementById("nav-logout").style.display = "none";
+        }
+    }
+
+    function logoutUser(){
+        localStorage.setItem("loggedIn", "false");
+        alert("Logged out successfully!");
+        window.location.href = "index.html";
+    }
+
+    document.getElementById("nav-logout").addEventListener("click", logoutUser);
+
+    updateNavbar();
+</script>
+
 
 <body>
 
@@ -142,11 +166,14 @@
     <nav>
         <h2>HealthConnect</h2>
         <div>
-            <a href="#">Home</a>
-            <a href="#">Search Doctors</a>
-            <a href="#">Login</a>
-            <a href="#">Register</a>
+          <a href="index.html">Home</a>
+          <a href="search.html">Search Doctors</a>
+          <a href="medicines.html">Medicines</a>
+          <a href="login.html" id="nav-login">Login</a>
+          <a href="register.html" id="nav-register">Register</a>
+          <a href="#" id="nav-logout" style="display:none;">Logout</a>
         </div>
+
     </nav>
 
     <!-- Hero Section -->
